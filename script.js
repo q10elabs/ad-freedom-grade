@@ -34,12 +34,24 @@ const GRADE_ORDER = ['A', 'B', 'C', 'D', 'E', 'F'];
 
 async function loadConfig() {
     try {
-        const response = await fetch('config.json');
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const version = params.get('v') || '1';
+        
+        const response = await fetch(`configs/v${version}.json`);
+        if (!response.ok) {
+            throw new Error(`Configuration version ${version} not found`);
+        }
+        
         config = await response.json();
+        
+        // Ensure version is set in config
+        if (!config.version) config.version = version;
+        
         initializeApp();
     } catch (error) {
         console.error('Error loading config:', error);
-        showError('Failed to load assessment. Please refresh the page.');
+        showError('Failed to load assessment configuration. Please check the URL or refresh the page.');
     }
 }
 
@@ -139,6 +151,14 @@ function createLabelHTML(grade, answers = null) {
 }
 
 function calculateScore() {
+    if (!config.formula || config.formula === 'weighted_sum') {
+        return calculateWeightedSum();
+    }
+    console.warn(`Unknown formula: ${config.formula}, defaulting to weighted_sum`);
+    return calculateWeightedSum();
+}
+
+function calculateWeightedSum() {
     let totalWeight = 0;
     let weightedScore = 0;
 
@@ -203,50 +223,12 @@ function showResult(grade, score) {
     document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
 
     updateUrlHash(grade);
-    updateOpenGraph(grade);
-}
-
-function generateOGImage(grade) {
-    const color = GRADE_COLORS[grade];
-    const label = GRADE_LABELS[grade];
-
-    const svg = `
-        <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-            <rect width="1200" height="630" fill="${color}"/>
-            <text x="600" y="280" font-family="Arial, sans-serif" font-size="300" font-weight="bold" fill="white" text-anchor="middle">${grade}</text>
-            <text x="600" y="420" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">${label}</text>
-            <text x="600" y="500" font-family="Arial, sans-serif" font-size="40" fill="white" text-anchor="middle">How "Ad-Free" Are You?</text>
-        </svg>
-    `;
-
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
-}
-
-function updateOpenGraph(grade) {
-    const imageUrl = generateOGImage(grade);
-
-    let ogImage = document.querySelector('meta[property="og:image"]');
-    if (!ogImage) {
-        ogImage = document.createElement('meta');
-        ogImage.setAttribute('property', 'og:image');
-        document.head.appendChild(ogImage);
-    }
-    ogImage.setAttribute('content', imageUrl);
-
-    let twitterImage = document.querySelector('meta[name="twitter:image"]');
-    if (!twitterImage) {
-        twitterImage = document.createElement('meta');
-        twitterImage.setAttribute('name', 'twitter:image');
-        document.head.appendChild(twitterImage);
-    }
-    twitterImage.setAttribute('content', imageUrl);
-
-    document.title = `My Ad-Free Rating: ${grade}`;
 }
 
 function updateUrlHash(grade) {
     const answersBase64 = btoa(JSON.stringify(userAnswers));
-    window.location.hash = `grade=${grade}&answers=${answersBase64}`;
+    const version = config.version || '1';
+    window.location.hash = `v=${version}&grade=${grade}&answers=${answersBase64}`;
 }
 
 function parseUrlHash() {
@@ -279,8 +261,6 @@ function parseUrlHash() {
             document.getElementById('result-section').style.display = 'block';
             document.getElementById('result-label').innerHTML = createLabelHTML(grade);
             document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
-
-            updateOpenGraph(grade);
         } catch (error) {
             console.error('Error parsing URL hash:', error);
         }
@@ -320,17 +300,6 @@ function showIntro() {
 
     introSections.style.display = 'block';
     resultSection.style.display = 'none';
-
-    document.title = config.title;
-
-    let ogImage = document.querySelector('meta[property="og:image"]');
-    if (ogImage) {
-        ogImage.removeAttribute('content');
-    }
-    let twitterImage = document.querySelector('meta[name="twitter:image"]');
-    if (twitterImage) {
-        twitterImage.removeAttribute('content');
-    }
 }
 
 document.addEventListener('DOMContentLoaded', loadConfig);

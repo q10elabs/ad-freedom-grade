@@ -1,4 +1,6 @@
 {
+  "version": "1",
+  "formula": "weighted_sum",
   "title": "How \"Ad-Free\" Are You?",
   "description": "This self-assessment helps you understand how insulated you are from advertising in your digital life. Answer honestly to see your label!",
   "questions": [

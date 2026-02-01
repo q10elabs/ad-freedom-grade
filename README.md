@@ -1,4 +1,4 @@
-# Ad-Free Self-Assessment Label
+# Ad Freedom Grade Self-Assessment
 
 A client-side web application that enables users to self-assess how "ad-free" they are using an EU-style quality label design.
 
@@ -7,6 +7,8 @@ A client-side web application that enables users to self-assess how "ad-free" th
 This lightweight web app generates an A-F rating label based on a self-assessment questionnaire. Users can take the assessment, receive their personalized label, and share their result via a unique URL that displays only the label when shared.
 
 Example output: a result label might show grade **B** (e.g. score 75 aew) with sub-scores such as Privacy 65%, Premium 45%.
+
+![](example.png)
 
 ## Features
 
@@ -82,3 +84,8 @@ Works in all modern browsers that support:
 - Compression Streams API (deflate) for result URL payloads
 
 No build process or dependencies required.
+
+## License
+
+- **Source code**: Licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0).
+- **Grade representation**: The A–F label design and grade representation are licensed under [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/) (CC BY-SA).

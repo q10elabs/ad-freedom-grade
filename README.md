@@ -2,6 +2,8 @@
 
 A client-side web application that enables users to self-assess how "ad-free" they are using an EU-style quality label design.
 
+Deployed at: https://ad-freedom-grade.q10elabs.com/
+
 ## Overview
 
 This lightweight web app generates an A-F rating label based on a self-assessment questionnaire. Users can take the assessment, receive their personalized label, and share their result via a unique URL that displays only the label when shared.

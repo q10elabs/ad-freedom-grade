@@ -67,7 +67,7 @@ async function initializeApp() {
     document.getElementById('page-title').textContent = config.title;
     document.getElementById('assessment-description').textContent = config.description;
 
-    renderExampleLabel('A');
+    renderExampleLabel('B');
     renderQuestions();
 
     await parseUrlHash();
@@ -80,8 +80,9 @@ async function initializeApp() {
 
 function renderExampleLabel(grade) {
     const container = document.getElementById('example-label');
-    const exampleScore = grade === 'A' ? 85 : 50;
-    container.innerHTML = createLabelHTML(grade, exampleScore);
+    const exampleScore = grade === 'A' ? 85 : grade === 'B' ? 75 : 50;
+    const exampleSubScores = config.subScores ? { privacy: 65, premium: 45 } : null;
+    container.innerHTML = createLabelHTML(grade, exampleScore, exampleSubScores);
 }
 
 function renderQuestions() {
@@ -227,7 +228,7 @@ function createLabelHTML(grade, score, subScores = null) {
     const version = config.version || '1';
     return `
         <div class="eu-label">
-            <div class="label-header">AD-FREE RATING</div>
+            <div class="label-header">YOUR AD FREEDOM GRADE</div>
             <div class="grade-bars">
                 ${barsHTML}
             </div>

@@ -63,6 +63,10 @@
     "E": 25,
     "F": 0
   },
+  "subScores": [
+    { "id": "privacy", "emoji": "🛡️", "label": "Privacy" },
+    { "id": "premium", "emoji": "💎", "label": "Premium" }
+  ],
   "icons": [
     {"id": "adblock", "emoji": "🛡️", "label": "Ad Blocking"},
     {"id": "premium", "emoji": "💎", "label": "Premium Services"},

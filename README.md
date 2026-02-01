@@ -6,6 +6,8 @@ A client-side web application that enables users to self-assess how "ad-free" th
 
 This lightweight web app generates an A-F rating label based on a self-assessment questionnaire. Users can take the assessment, receive their personalized label, and share their result via a unique URL that displays only the label when shared.
 
+Example output: a result label might show grade **B** (e.g. score 75 aew) with sub-scores such as Privacy 65%, Premium 45%.
+
 ## Features
 
 - **Dynamic Form Generation**: Questions loaded from JSON configuration

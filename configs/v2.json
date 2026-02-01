@@ -118,7 +118,7 @@
       "options": ["s", "b"],
       "hints": {
         "s": "Throw away without reading",
-        "b": "Opt-out services, mailbox stickers"
+        "b": "Opt-out services, mailbox stickers, etc."
       }
     },
     {
@@ -139,7 +139,7 @@
       "options": ["s", "b", "p"],
       "hints": {
         "s": "Change channel during ads",
-        "b": "DVR fast-forward, Pi-hole",
+        "b": "DVR fast-forward, Pi-hole, etc.",
         "p": "Ad-free streaming instead"
       }
     },
@@ -151,7 +151,7 @@
       "hints": {
         "s": "Change station during ads",
         "b": "Ad-skipping apps",
-        "p": "Satellite radio, Spotify Premium"
+          "p": "Satellite radio, Spotify Premium, etc."
       }
     },
     {
@@ -170,7 +170,7 @@
       "options": ["s", "b", "p"],
       "hints": {
         "s": "Ignore sponsored results",
-        "b": "uBlock Origin, Brave",
+          "b": "uBlock Origin, Brave, etc.",
         "p": "Kagi, Neeva, etc."
       }
     }

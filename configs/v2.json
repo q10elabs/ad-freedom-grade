@@ -1,0 +1,197 @@
+{
+  "version": "2",
+  "formula": "exposure_based",
+  "title": "How Much Advertising Do You See?",
+  "description": "This assessment estimates your weekly ad exposure based on your media usage patterns and the mitigation strategies you employ. A lower exposure score means less advertising in your life.",
+
+  "frequencyLevels": [
+    { "value": "never", "label": "Never", "hint": "Not part of my life", "hoursPerWeek": 0 },
+    { "value": "occasionally", "label": "Occasionally", "hint": "A few times a month", "hoursPerWeek": 1 },
+    { "value": "regularly", "label": "Regularly", "hint": "A few times a week", "hoursPerWeek": 5 },
+    { "value": "daily", "label": "Daily", "hint": "Part of my daily habits", "hoursPerWeek": 12 },
+    { "value": "heavy", "label": "Heavy use", "hint": "A major part of my day", "hoursPerWeek": 25 }
+  ],
+
+  "mitigationOptions": {
+    "skip": { "label": "I skip/ignore them when I can", "exposureFactor": 0.7 },
+    "blocker": { "label": "I use an ad blocker", "exposureFactor": 0.1, "category": "privacy" },
+    "premium": { "label": "I use a premium ad-free service", "exposureFactor": 0.0, "category": "premium" }
+  },
+
+  "mediaTypes": [
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "adDensity": 7,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Skip ads after 5 seconds",
+        "blocker": "uBlock Origin, Brave, etc.",
+        "premium": "YouTube Premium subscription"
+      }
+    },
+    {
+      "id": "cinema",
+      "name": "Cinema",
+      "adDensity": 1,
+      "options": ["skip", "premium"],
+      "hints": {
+        "skip": "Arrive late to skip trailers/ads",
+        "premium": "Premium screenings without ads"
+      }
+    },
+    {
+      "id": "streaming",
+      "name": "Other streaming services",
+      "adDensity": 5,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Skip when possible",
+        "blocker": "Browser extensions",
+        "premium": "Ad-free subscription tier"
+      }
+    },
+    {
+      "id": "podcasts",
+      "name": "Podcasts",
+      "adDensity": 4,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Skip forward through ad reads",
+        "blocker": "Apps that skip sponsor segments",
+        "premium": "Patreon/premium feeds"
+      }
+    },
+    {
+      "id": "posters",
+      "name": "Posters in public spaces",
+      "adDensity": 2,
+      "options": ["skip"],
+      "hints": {
+        "skip": "Actively avoid looking at them"
+      }
+    },
+    {
+      "id": "billboards",
+      "name": "Billboards on the road",
+      "adDensity": 2,
+      "options": ["skip"],
+      "hints": {
+        "skip": "Focus on the road, ignore billboards"
+      }
+    },
+    {
+      "id": "transport",
+      "name": "Ads in public transport",
+      "adDensity": 2,
+      "options": ["skip"],
+      "hints": {
+        "skip": "Focus elsewhere, use headphones"
+      }
+    },
+    {
+      "id": "websites",
+      "name": "Non-shopping websites",
+      "adDensity": 6,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Scroll past ads",
+        "blocker": "uBlock Origin, AdGuard, etc.",
+        "premium": "Subscription news sites, etc."
+      }
+    },
+    {
+      "id": "social",
+      "name": "Social media",
+      "adDensity": 7,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Scroll past sponsored content",
+        "blocker": "Browser extensions, modified apps",
+        "premium": "Twitter/X Premium, etc."
+      }
+    },
+    {
+      "id": "postal",
+      "name": "Postal mail",
+      "adDensity": 3,
+      "options": ["skip", "blocker"],
+      "hints": {
+        "skip": "Throw away without reading",
+        "blocker": "Opt-out services, mailbox stickers"
+      }
+    },
+    {
+      "id": "games",
+      "name": "Online/mobile games",
+      "adDensity": 7,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Close ads quickly",
+        "blocker": "Modified apps, DNS blocking",
+        "premium": "Paid games or in-app purchases"
+      }
+    },
+    {
+      "id": "television",
+      "name": "Television",
+      "adDensity": 10,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Change channel during ads",
+        "blocker": "DVR fast-forward, Pi-hole",
+        "premium": "Ad-free streaming instead"
+      }
+    },
+    {
+      "id": "radio",
+      "name": "Radio",
+      "adDensity": 8,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Change station during ads",
+        "blocker": "Ad-skipping apps",
+        "premium": "Satellite radio, Spotify Premium"
+      }
+    },
+    {
+      "id": "print",
+      "name": "Printed magazines/newspapers",
+      "adDensity": 3,
+      "options": ["skip"],
+      "hints": {
+        "skip": "Flip past ad pages"
+      }
+    },
+    {
+      "id": "search",
+      "name": "Search results",
+      "adDensity": 4,
+      "options": ["skip", "blocker", "premium"],
+      "hints": {
+        "skip": "Ignore sponsored results",
+        "blocker": "uBlock Origin, Brave",
+        "premium": "Kagi, Neeva, etc."
+      }
+    }
+  ],
+
+  "gradeThresholds": {
+    "A": { "maxExposure": 50 },
+    "B": { "maxExposure": 150 },
+    "C": { "maxExposure": 300 },
+    "D": { "maxExposure": 500 },
+    "E": { "maxExposure": 750 },
+    "F": { "maxExposure": null }
+  },
+
+  "subScores": [
+    { "id": "privacy", "emoji": "🛡️", "label": "Privacy" },
+    { "id": "premium", "emoji": "💎", "label": "Premium" }
+  ],
+
+  "icons": [
+    { "id": "privacy", "emoji": "🛡️", "label": "Ad Blocking" },
+    { "id": "premium", "emoji": "💎", "label": "Premium Services" }
+  ]
+}

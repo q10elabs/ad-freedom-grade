@@ -337,6 +337,261 @@
             text-align: center;
         }
 
+        /* v2 Media item styles */
+        .media-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .media-header {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .frequency-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .frequency-label {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .frequency-label:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .frequency-label input {
+            margin-right: 8px;
+            accent-color: #667eea;
+        }
+
+        .frequency-label .hint {
+            color: #718096;
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+
+        .mitigation-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background: #edf2f7;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .mitigation-options.hidden {
+            display: none;
+        }
+
+        .mitigation-header {
+            font-size: 0.85rem;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .mitigation-hint {
+            font-size: 0.8rem;
+            color: #718096;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-label:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .checkbox-label input {
+            margin-right: 10px;
+            accent-color: #667eea;
+            width: 16px;
+            height: 16px;
+        }
+
+        .checkbox-label .mitigation-text {
+            flex: 1;
+        }
+
+        .checkbox-label .mitigation-detail {
+            color: #718096;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        /* Sub-score bars in result label */
+        .sub-scores {
+            padding: 10px 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .sub-score-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .sub-score-emoji {
+            font-size: 1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sub-score-bar {
+            flex: 1;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .sub-score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease-out;
+        }
+
+        .sub-score-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #4a5568;
+            width: 40px;
+            text-align: right;
+        }
+
+        .exposure-message {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-top: 10px;
+        }
+
+        /* Score breakdown section */
+        .details-btn {
+            background: transparent;
+            color: #667eea;
+            border: 1px solid #667eea;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .details-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .score-breakdown {
+            margin-top: 15px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .score-breakdown.hidden {
+            display: none;
+        }
+
+        .breakdown-header {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .breakdown-table th {
+            text-align: left;
+            padding: 8px;
+            background: #edf2f7;
+            color: #4a5568;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .breakdown-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        .breakdown-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .breakdown-table .total-row {
+            font-weight: 600;
+            background: #edf2f7;
+        }
+
+        .breakdown-table .total-row td {
+            border-top: 2px solid #cbd5e0;
+        }
+
+        .breakdown-table .zero-exposure {
+            color: #a0aec0;
+        }
+
+        .breakdown-formula {
+            margin-top: 15px;
+            padding: 12px;
+            background: #edf2f7;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+
+        .breakdown-formula code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -378,6 +633,27 @@
             border-top: 12px solid transparent;
             border-bottom: 12px solid transparent;
         }
+
+        .frequency-options {
+            flex-direction: column;
+        }
+
+        .frequency-label {
+            width: 100%;
+        }
+
+        .breakdown-table {
+            font-size: 0.75rem;
+        }
+
+        .breakdown-table th,
+        .breakdown-table td {
+            padding: 6px 4px;
+        }
+
+        .score-breakdown {
+            padding: 15px 10px;
+        }
         }
     </style>
 </head>
@@ -414,6 +690,8 @@
                 <div class="result-container">
                     <div class="label-container" id="result-label"></div>
                     <p class="description" id="result-message"></p>
+                    <button class="details-btn" id="details-btn">Show score breakdown</button>
+                    <div class="score-breakdown hidden" id="score-breakdown"></div>
                     <button class="share-btn" id="share-btn">🔗 Share Your Result</button>
                     <p class="copy-feedback" id="copy-feedback">✓ URL copied to clipboard!</p>
                     <button class="reset-btn" id="reset-btn">Take Assessment Again</button>

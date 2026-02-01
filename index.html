@@ -69,6 +69,65 @@
             padding: 20px 0;
         }
 
+        /* Intro: about text + example label side-by-side, stacked on narrow */
+        .intro-with-example {
+            display: flex;
+            flex-direction: row;
+            gap: 2rem;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .intro-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .intro-text .section-heading {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .intro-eu-note {
+            font-size: 0.85rem;
+            color: #718096;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+
+        .intro-eu-note a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .intro-eu-note a:hover {
+            text-decoration: underline;
+        }
+
+        .intro-example {
+            flex-shrink: 0;
+            padding: 20px 0;
+        }
+
+        .intro-example .label-container {
+            padding: 0;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 680px) {
+            .intro-with-example {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .intro-example .label-container {
+                justify-content: center;
+            }
+        }
+
         .eu-label {
             position: relative;
             width: 280px;
@@ -692,20 +751,21 @@
 
         <div id="app-content" style="display: none;">
             <div id="intro-sections">
-                <section class="section">
-                    <h2>Example Output</h2>
-                    <p class="description">Here's what your result label will look like (showing a 'B' grade with sub-scores):</p>
-                    <div class="label-container" id="example-label"></div>
-                </section>
-
-                <section class="section">
-                    <h2>About This Assessment</h2>
-                    <p id="assessment-description" class="description"></p>
-                </section>
+                <div class="intro-with-example">
+                    <div class="intro-text">
+                        <h2 class="section-heading">About This Assessment</h2>
+                        <p id="assessment-description" class="description"></p>
+                        <p class="description intro-example-hint">An example result (grade B) is shown. Complete the questions below to get your own label.</p>
+                        <p class="intro-eu-note">The Ad Freedom Grade is inspired from the <a href="https://en.wikipedia.org/wiki/European_Union_energy_label" target="_blank" rel="noopener noreferrer">EU energy label</a> standards.</p>
+                    </div>
+                    <div class="intro-example">
+                        <div class="label-container" id="example-label"></div>
+                    </div>
+                </div>
 
                 <section class="section" id="form-section">
                     <h2>Self-Assessment</h2>
-                    <p class="description">Answer the questions below honestly to see your "Ad-Free" label:</p>
+                    <p class="description">Answer the questions below honestly to see your “Ad Freedom Grade”:</p>
                     <div id="questions-container"></div>
                     <button class="submit-btn" id="submit-btn">See My Result</button>
                 </section>

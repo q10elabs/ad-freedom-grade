@@ -16,7 +16,7 @@ This lightweight web app generates an A-F rating label based on a self-assessmen
   - Color-coded gradients (green to red)
   - Score indicator aligned with matching grade row
   - Emoji icons for key metrics
-- **Shareable Results**: URL hash encoding for sharing assessment results with version tracking
+- **Shareable Results**: URL hash encoding with deflate-compressed payloads (base64) for sharing assessment results with version tracking
 - **Result-Only Pages**: Shared URLs show only the label, not the assessment form
 - **Easy Customization**: Edit configuration files to modify questions, weights, and thresholds
 - **Client-Side Only**: No server required, works entirely in the browser
@@ -77,5 +77,6 @@ Works in all modern browsers that support:
 - ES6 JavaScript (async/await, arrow functions)
 - CSS Grid and Flexbox
 - URL and URLSearchParams APIs
+- Compression Streams API (deflate) for result URL payloads
 
 No build process or dependencies required.

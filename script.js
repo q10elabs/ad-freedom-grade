@@ -61,7 +61,7 @@ function showError(message) {
     document.getElementById('error').style.display = 'block';
 }
 
-function initializeApp() {
+async function initializeApp() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('app-content').style.display = 'block';
     document.getElementById('page-title').textContent = config.title;
@@ -70,7 +70,7 @@ function initializeApp() {
     renderExampleLabel('A');
     renderQuestions();
 
-    parseUrlHash();
+    await parseUrlHash();
 
     document.getElementById('submit-btn').addEventListener('click', handleSubmit);
     document.getElementById('share-btn').addEventListener('click', shareResult);
@@ -417,7 +417,7 @@ function handleExposureSubmit(formSection) {
     showResult(grade, score, subScores);
 }
 
-function showResult(grade, score, subScores = null) {
+async function showResult(grade, score, subScores = null) {
     const formSection = document.getElementById('form-section');
     const resultSection = document.getElementById('result-section');
     const introSections = document.getElementById('intro-sections');
@@ -428,6 +428,7 @@ function showResult(grade, score, subScores = null) {
     // Reset breakdown section
     document.getElementById('score-breakdown').classList.add('hidden');
     document.getElementById('details-btn').textContent = 'Show score breakdown';
+    document.getElementById('details-btn').style.display = '';
 
     document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
 
@@ -439,22 +440,47 @@ function showResult(grade, score, subScores = null) {
         document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
     }
 
-    updateUrlHash(grade, subScores);
+    await updateUrlHash(grade, subScores);
 }
 
-function updateUrlHash(grade, subScores = null) {
-    const answersBase64 = btoa(JSON.stringify(userAnswers));
+async function compressToBase64(str) {
+    const blob = new Blob([str]);
+    const stream = blob.stream().pipeThrough(new CompressionStream('deflate'));
+    const compressed = await new Response(stream).arrayBuffer();
+    const bytes = new Uint8Array(compressed);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+}
+
+async function decompressFromBase64(base64) {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+    }
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+    const decompressed = await new Response(stream).arrayBuffer();
+    return new TextDecoder().decode(decompressed);
+}
+
+async function updateUrlHash(grade, subScores = null) {
+    const score = calculateScore();
+    const answersBase64 = await compressToBase64(JSON.stringify(userAnswers));
     const version = config.version || '1';
-    let hash = `v=${version}&grade=${grade}&answers=${answersBase64}`;
+    let hash = `v=${version}&grade=${grade}&score=${score}&answers=${encodeURIComponent(answersBase64)}`;
 
     if (subScores) {
-        hash += `&sub=${btoa(JSON.stringify(subScores))}`;
+        const subBase64 = await compressToBase64(JSON.stringify(subScores));
+        hash += `&sub=${encodeURIComponent(subBase64)}`;
     }
 
     window.location.hash = hash;
 }
 
-function parseUrlHash() {
+async function parseUrlHash() {
     const hash = window.location.hash.substring(1);
     if (!hash) return;
 
@@ -462,71 +488,153 @@ function parseUrlHash() {
     const grade = params.get('grade');
     const answersBase64 = params.get('answers');
     const subScoresBase64 = params.get('sub');
+    const scoreParam = params.get('score');
 
-    if (grade && answersBase64) {
+    // Share-only URL: grade + score (and optional sub), no answers
+    if (grade && scoreParam !== null && !answersBase64) {
+        const score = parseInt(scoreParam, 10);
+        let subScores = null;
+        if (subScoresBase64) {
+            try {
+                subScores = JSON.parse(await decompressFromBase64(subScoresBase64));
+            } catch (_) {
+                try {
+                    subScores = JSON.parse(atob(subScoresBase64));
+                } catch (__) {}
+            }
+        }
+        document.getElementById('intro-sections').style.display = 'none';
+        document.getElementById('result-section').style.display = 'block';
+        document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+        if (config.formula === 'exposure_based') {
+            document.getElementById('result-message').innerHTML =
+                `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
+        } else {
+            document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
+        }
+        document.getElementById('details-btn').style.display = 'none';
+        return;
+    }
+
+    if (grade && (answersBase64 || scoreParam !== null)) {
         try {
-            userAnswers = JSON.parse(atob(answersBase64));
-            let subScores = null;
+            if (answersBase64) {
+                let answersJson;
+                try {
+                    answersJson = await decompressFromBase64(answersBase64);
+                } catch (_) {
+                    answersJson = atob(answersBase64); // legacy uncompressed
+                }
+                userAnswers = JSON.parse(answersJson);
+            }
 
+            let subScores = null;
             if (subScoresBase64) {
-                subScores = JSON.parse(atob(subScoresBase64));
+                try {
+                    subScores = JSON.parse(await decompressFromBase64(subScoresBase64));
+                } catch (_) {
+                    try {
+                        subScores = JSON.parse(atob(subScoresBase64));
+                    } catch (__) {}
+                }
             }
 
             const formSection = document.getElementById('form-section');
             const introSections = document.getElementById('intro-sections');
 
-            if (config.formula === 'exposure_based') {
-                // Restore exposure-based form state
-                for (const media of config.mediaTypes) {
-                    const answer = userAnswers[media.id];
-                    if (answer && answer.f) {
-                        const freqRadio = formSection.querySelector(
-                            `input[name="freq_${media.id}"][value="${answer.f}"]`
-                        );
-                        if (freqRadio) {
-                            freqRadio.checked = true;
-                            handleFrequencyChange(media.id, answer.f);
-                        }
+            if (userAnswers && Object.keys(userAnswers).length > 0) {
+                // Full restore: we have answers, restore form and show result
+                if (config.formula === 'exposure_based') {
+                    for (const media of config.mediaTypes) {
+                        const answer = userAnswers[media.id];
+                        if (answer && answer.f) {
+                            const freqRadio = formSection.querySelector(
+                                `input[name="freq_${media.id}"][value="${answer.f}"]`
+                            );
+                            if (freqRadio) {
+                                freqRadio.checked = true;
+                                handleFrequencyChange(media.id, answer.f);
+                            }
 
-                        if (answer.m && getHoursForFrequency(answer.f) > 0) {
-                            for (const mit of answer.m) {
-                                const checkbox = formSection.querySelector(
-                                    `input[name="mit_${media.id}"][value="${mit}"]`
-                                );
-                                if (checkbox) checkbox.checked = true;
+                            if (answer.m && getHoursForFrequency(answer.f) > 0) {
+                                for (const mit of answer.m) {
+                                    const checkbox = formSection.querySelector(
+                                        `input[name="mit_${media.id}"][value="${mit}"]`
+                                    );
+                                    if (checkbox) checkbox.checked = true;
+                                }
                             }
                         }
                     }
+
+                    const score = calculateScore();
+                    subScores = subScores || calculateSubScores();
+
+                    introSections.style.display = 'none';
+                    document.getElementById('result-section').style.display = 'block';
+                    document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+                    document.getElementById('result-message').innerHTML =
+                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
+                } else {
+                    config.questions.forEach(question => {
+                        const answer = userAnswers[question.id];
+                        const radio = formSection.querySelector(`input[name="${question.id}"][value="${answer}"]`);
+                        if (radio) {
+                            radio.checked = true;
+                        }
+                    });
+
+                    const score = calculateScore();
+
+                    introSections.style.display = 'none';
+                    document.getElementById('result-section').style.display = 'block';
+                    document.getElementById('result-label').innerHTML = createLabelHTML(grade);
+                    document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
                 }
-
-                const score = calculateScore();
-                subScores = subScores || calculateSubScores();
-
-                introSections.style.display = 'none';
+            } else {
+                // No answers (or parse failed): show result using score/sub from URL
+                const score = scoreParam !== null ? parseInt(scoreParam, 10) : 0;
+                document.getElementById('intro-sections').style.display = 'none';
                 document.getElementById('result-section').style.display = 'block';
                 document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
-                document.getElementById('result-message').innerHTML =
-                    `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
-                    `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
-            } else {
-                // Restore weighted-sum form state
-                config.questions.forEach(question => {
-                    const answer = userAnswers[question.id];
-                    const radio = formSection.querySelector(`input[name="${question.id}"][value="${answer}"]`);
-                    if (radio) {
-                        radio.checked = true;
-                    }
-                });
-
-                const score = calculateScore();
-
-                introSections.style.display = 'none';
-                document.getElementById('result-section').style.display = 'block';
-                document.getElementById('result-label').innerHTML = createLabelHTML(grade);
-                document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
+                if (config.formula === 'exposure_based') {
+                    document.getElementById('result-message').innerHTML =
+                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
+                } else {
+                    document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
+                }
+                document.getElementById('details-btn').style.display = 'none';
             }
         } catch (error) {
             console.error('Error parsing URL hash:', error);
+            // Fallback: if we have grade and score, still show the result
+            if (grade && scoreParam !== null) {
+                const score = parseInt(scoreParam, 10);
+                let subScores = null;
+                if (subScoresBase64) {
+                    try {
+                        subScores = JSON.parse(await decompressFromBase64(subScoresBase64));
+                    } catch (_) {
+                        try {
+                            subScores = JSON.parse(atob(subScoresBase64));
+                        } catch (__) {}
+                    }
+                }
+                document.getElementById('intro-sections').style.display = 'none';
+                document.getElementById('result-section').style.display = 'block';
+                document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+                if (config.formula === 'exposure_based') {
+                    document.getElementById('result-message').innerHTML =
+                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
+                } else {
+                    document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
+                }
+                document.getElementById('details-btn').style.display = 'none';
+            }
         }
     }
 }
@@ -682,20 +790,33 @@ function generateWeightedBreakdownHTML() {
     `;
 }
 
-function shareResult() {
-    const url = window.location.href;
+async function shareResult() {
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    const version = params.get('v') || config.version || '1';
+    const grade = params.get('grade');
+    if (!grade) {
+        alert('No result to share. Complete the assessment first.');
+        return;
+    }
+    const score = calculateScore();
+    let shareHash = `v=${version}&grade=${grade}&score=${score}`;
+    const subBase64 = params.get('sub');
+    if (subBase64) {
+        shareHash += `&sub=${encodeURIComponent(subBase64)}`;
+    }
+    const shareUrl = window.location.origin + window.location.pathname + '#' + shareHash;
 
-    navigator.clipboard.writeText(url).then(() => {
+    try {
+        await navigator.clipboard.writeText(shareUrl);
         const feedback = document.getElementById('copy-feedback');
         feedback.style.display = 'block';
-
         setTimeout(() => {
             feedback.style.display = 'none';
         }, 3000);
-    }).catch(err => {
+    } catch (err) {
         console.error('Failed to copy:', err);
         alert('Failed to copy URL. Please copy manually from your browser address bar.');
-    });
+    }
 }
 
 function resetAssessment() {

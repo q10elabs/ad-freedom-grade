@@ -75,7 +75,7 @@ async function initializeApp() {
     await parseUrlHash();
 
     document.getElementById('submit-btn').addEventListener('click', handleSubmit);
-    document.getElementById('share-btn').addEventListener('click', shareResult);
+    document.getElementById('copy-url-btn').addEventListener('click', shareResult);
     document.getElementById('reset-btn').addEventListener('click', resetAssessment);
     document.getElementById('details-btn').addEventListener('click', toggleBreakdown);
 }

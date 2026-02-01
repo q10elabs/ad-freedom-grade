@@ -70,6 +70,8 @@ async function initializeApp() {
     renderExampleLabel('B');
     renderQuestions();
 
+    copyExplanationToResult();
+
     await parseUrlHash();
 
     document.getElementById('submit-btn').addEventListener('click', handleSubmit);
@@ -850,6 +852,25 @@ function resetAssessment() {
     mitigationDivs.forEach(div => div.classList.add('hidden'));
 
     showIntro();
+}
+
+function copyExplanationToResult() {
+    const explanation = document.getElementById('grade-explanation');
+    const resultContainer = document.querySelector('.result-container');
+    
+    if (explanation && resultContainer) {
+        if (document.getElementById('result-explanation-copy')) return;
+
+        const copy = explanation.cloneNode(true);
+        copy.id = 'result-explanation-copy';
+        copy.style.marginTop = '40px';
+        copy.style.textAlign = 'left';
+        copy.style.borderBottom = 'none';
+        copy.style.marginBottom = '0';
+        copy.style.paddingBottom = '0';
+        
+        resultContainer.appendChild(copy);
+    }
 }
 
 function showIntro() {

@@ -54,7 +54,7 @@ The project supports multiple versions of the assessment configuration.
 
 1.  **Create a new version**: Create a new JSON file in `configs/` (e.g., `configs/v2.json`).
 2.  **Versioning**: Ensure the JSON object includes a `"version": "2"` field.
-3.  **Loading**: To load a specific version, append `#v=2` to the URL (e.g., `index.html#v=2`).
+3.  **Loading**: The default configuration is v2. To load a specific version, append `#v=1` or `#v=2` to the URL (e.g., `index.html#v=1` for the weighted-sum assessment).
 
 Configuration parameters in `configs/v*.json`:
 
@@ -69,7 +69,7 @@ Configuration parameters in `configs/v*.json`:
 
 - **index.html**: Single-page application structure with CSS styling
 - **script.js**:
-  - Loads configuration dynamically based on URL hash (e.g., `#v=2`)
+  - Loads configuration dynamically based on URL hash (default v2; use `#v=1` or `#v=2` to override)
   - Renders form dynamically
   - Calculates scores using strategies (supports multiple formulas)
   - Determines grades from thresholds

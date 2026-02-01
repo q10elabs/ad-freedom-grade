@@ -36,7 +36,7 @@ async function loadConfig() {
     try {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
-        const version = params.get('v') || '1';
+        const version = params.get('v') || '2';
         
         const response = await fetch(`configs/v${version}.json`);
         if (!response.ok) {
@@ -227,7 +227,7 @@ function createLabelHTML(grade, score, subScores = null) {
         `;
     }
 
-    const version = config.version || '1';
+    const version = config.version || '2';
     return `
         <div class="eu-label">
             <div class="label-header">YOUR AD FREEDOM GRADE</div>
@@ -482,7 +482,7 @@ async function decompressFromBase64(base64) {
 async function updateUrlHash(grade, subScores = null) {
     const score = calculateScore();
     const answersBase64 = await compressToBase64(JSON.stringify(userAnswers));
-    const version = config.version || '1';
+    const version = config.version || '2';
     let hash = `v=${version}&grade=${grade}&score=${score}&answers=${encodeURIComponent(answersBase64)}`;
 
     if (subScores) {
@@ -805,7 +805,7 @@ function generateWeightedBreakdownHTML() {
 
 async function shareResult() {
     const params = new URLSearchParams(window.location.hash.substring(1));
-    const version = params.get('v') || config.version || '1';
+    const version = params.get('v') || config.version || '2';
     const grade = params.get('grade');
     if (!grade) {
         alert('No result to share. Complete the assessment first.');
@@ -833,7 +833,7 @@ async function shareResult() {
 }
 
 function resetAssessment() {
-    const version = config.version || '1';
+    const version = config.version || '2';
     window.location.hash = `v=${version}`;
     userAnswers = {};
 

@@ -153,7 +153,7 @@ function renderExposureQuestions(container) {
 
 function handleFrequencyChange(mediaId, frequency) {
     const mitigationDiv = document.getElementById(`mitigation_${mediaId}`);
-    if (frequency === 'never') {
+    if (getHoursForFrequency(frequency) === 0) {
         mitigationDiv.classList.add('hidden');
         // Clear mitigation selections when frequency is never
         const checkboxes = mitigationDiv.querySelectorAll('input[type="checkbox"]');
@@ -267,11 +267,11 @@ function calculateExposureScore() {
 
     for (const media of config.mediaTypes) {
         const answer = userAnswers[media.id];
-        const frequency = answer?.frequency;
-        if (!frequency || frequency === 'never') continue;
+        const frequency = answer?.f;
+        if (getHoursForFrequency(frequency) === 0) continue;
 
         const hours = getHoursForFrequency(frequency);
-        const mitigations = answer?.mitigations || [];
+        const mitigations = answer?.m || [];
         const exposureFactor = getLowestExposureFactor(mitigations);
 
         totalExposure += hours * media.adDensity * exposureFactor;
@@ -287,15 +287,18 @@ function calculateSubScores() {
 
     for (const media of config.mediaTypes) {
         const answer = userAnswers[media.id];
-        const frequency = answer?.frequency;
-        if (!frequency || frequency === 'never') continue;
+        const frequency = answer?.f;
+        if (getHoursForFrequency(frequency) === 0) continue;
 
         const hours = getHoursForFrequency(frequency);
         totalHours += hours;
 
-        const mitigations = answer?.mitigations || [];
-        if (mitigations.includes('blocker')) privacyHours += hours;
-        if (mitigations.includes('premium')) premiumHours += hours;
+        const mitigations = answer?.m || [];
+        for (const mit of mitigations) {
+            const cat = config.mitigationOptions[mit]?.category;
+            if (cat === 'privacy') privacyHours += hours;
+            if (cat === 'premium') premiumHours += hours;
+        }
     }
 
     return {
@@ -390,14 +393,14 @@ function handleExposureSubmit(formSection) {
             const frequency = freqRadio.value;
             const mitigations = [];
 
-            if (frequency !== 'never') {
+            if (getHoursForFrequency(frequency) > 0) {
                 const mitCheckboxes = formSection.querySelectorAll(`input[name="mit_${media.id}"]:checked`);
                 mitCheckboxes.forEach(cb => mitigations.push(cb.value));
             }
 
             userAnswers[media.id] = {
-                frequency: frequency,
-                mitigations: mitigations
+                f: frequency,
+                m: mitigations
             };
         }
     }
@@ -476,17 +479,17 @@ function parseUrlHash() {
                 // Restore exposure-based form state
                 for (const media of config.mediaTypes) {
                     const answer = userAnswers[media.id];
-                    if (answer && answer.frequency) {
+                    if (answer && answer.f) {
                         const freqRadio = formSection.querySelector(
-                            `input[name="freq_${media.id}"][value="${answer.frequency}"]`
+                            `input[name="freq_${media.id}"][value="${answer.f}"]`
                         );
                         if (freqRadio) {
                             freqRadio.checked = true;
-                            handleFrequencyChange(media.id, answer.frequency);
+                            handleFrequencyChange(media.id, answer.f);
                         }
 
-                        if (answer.mitigations && answer.frequency !== 'never') {
-                            for (const mit of answer.mitigations) {
+                        if (answer.m && getHoursForFrequency(answer.f) > 0) {
+                            for (const mit of answer.m) {
                                 const checkbox = formSection.querySelector(
                                     `input[name="mit_${media.id}"][value="${mit}"]`
                                 );
@@ -556,15 +559,16 @@ function generateExposureBreakdownHTML() {
 
     for (const media of config.mediaTypes) {
         const answer = userAnswers[media.id];
-        const frequency = answer?.frequency;
+        const frequency = answer?.f;
         const freqLevel = config.frequencyLevels.find(l => l.value === frequency);
         const hours = freqLevel ? freqLevel.hoursPerWeek : 0;
 
-        if (!frequency || frequency === 'never') {
+        if (getHoursForFrequency(frequency) === 0) {
+            const zeroLabel = freqLevel?.label || 'Never';
             rows += `
                 <tr class="zero-exposure">
                     <td>${media.name}</td>
-                    <td>Never</td>
+                    <td>${zeroLabel}</td>
                     <td>-</td>
                     <td>-</td>
                     <td>0</td>
@@ -573,7 +577,7 @@ function generateExposureBreakdownHTML() {
             continue;
         }
 
-        const mitigations = answer?.mitigations || [];
+        const mitigations = answer?.m || [];
         const exposureFactor = getLowestExposureFactor(mitigations);
         const exposure = hours * media.adDensity * exposureFactor;
         totalExposure += exposure;

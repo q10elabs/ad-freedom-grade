@@ -5,173 +5,173 @@
   "description": "This assessment estimates your weekly ad exposure based on your media usage patterns and the mitigation strategies you employ. A lower exposure score means less advertising in your life.",
 
   "frequencyLevels": [
-    { "value": "never", "label": "Never", "hint": "Not part of my life", "hoursPerWeek": 0 },
-    { "value": "occasionally", "label": "Occasionally", "hint": "A few times a month", "hoursPerWeek": 1 },
-    { "value": "regularly", "label": "Regularly", "hint": "A few times a week", "hoursPerWeek": 5 },
-    { "value": "daily", "label": "Daily", "hint": "Part of my daily habits", "hoursPerWeek": 12 },
-    { "value": "heavy", "label": "Heavy use", "hint": "A major part of my day", "hoursPerWeek": 25 }
+    { "value": "n", "label": "Never", "hint": "Not part of my life", "hoursPerWeek": 0 },
+    { "value": "o", "label": "Occasionally", "hint": "A few times a month", "hoursPerWeek": 1 },
+    { "value": "r", "label": "Regularly", "hint": "A few times a week", "hoursPerWeek": 5 },
+    { "value": "d", "label": "Daily", "hint": "Part of my daily habits", "hoursPerWeek": 12 },
+    { "value": "h", "label": "Heavy use", "hint": "A major part of my day", "hoursPerWeek": 25 }
   ],
 
   "mitigationOptions": {
-    "skip": { "label": "I skip/ignore them when I can", "exposureFactor": 0.7 },
-    "blocker": { "label": "I use an ad blocker", "exposureFactor": 0.1, "category": "privacy" },
-    "premium": { "label": "I use a premium ad-free service", "exposureFactor": 0.0, "category": "premium" }
+    "s": { "label": "I skip/ignore them when I can", "exposureFactor": 0.7 },
+    "b": { "label": "I use an ad blocker", "exposureFactor": 0.1, "category": "privacy" },
+    "p": { "label": "I use a premium ad-free service", "exposureFactor": 0.0, "category": "premium" }
   },
 
   "mediaTypes": [
     {
-      "id": "youtube",
+      "id": "yt",
       "name": "YouTube",
       "adDensity": 7,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Skip ads after 5 seconds",
-        "blocker": "uBlock Origin, Brave, etc.",
-        "premium": "YouTube Premium subscription"
+        "s": "Skip ads after 5 seconds",
+        "b": "uBlock Origin, Brave, etc.",
+        "p": "YouTube Premium subscription"
       }
     },
     {
-      "id": "cinema",
+      "id": "cm",
       "name": "Cinema",
       "adDensity": 1,
-      "options": ["skip", "premium"],
+      "options": ["s", "p"],
       "hints": {
-        "skip": "Arrive late to skip trailers/ads",
-        "premium": "Premium screenings without ads"
+        "s": "Arrive late to skip trailers/ads",
+        "p": "Premium screenings without ads"
       }
     },
     {
-      "id": "streaming",
+      "id": "st",
       "name": "Other streaming services",
       "adDensity": 5,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Skip when possible",
-        "blocker": "Browser extensions",
-        "premium": "Ad-free subscription tier"
+        "s": "Skip when possible",
+        "b": "Browser extensions",
+        "p": "Ad-free subscription tier"
       }
     },
     {
-      "id": "podcasts",
+      "id": "pd",
       "name": "Podcasts",
       "adDensity": 4,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Skip forward through ad reads",
-        "blocker": "Apps that skip sponsor segments",
-        "premium": "Patreon/premium feeds"
+        "s": "Skip forward through ad reads",
+        "b": "Apps that skip sponsor segments",
+        "p": "Patreon/premium feeds"
       }
     },
     {
-      "id": "posters",
+      "id": "ps",
       "name": "Posters in public spaces",
       "adDensity": 2,
-      "options": ["skip"],
+      "options": ["s"],
       "hints": {
-        "skip": "Actively avoid looking at them"
+        "s": "Actively avoid looking at them"
       }
     },
     {
-      "id": "billboards",
+      "id": "bb",
       "name": "Billboards on the road",
       "adDensity": 2,
-      "options": ["skip"],
+      "options": ["s"],
       "hints": {
-        "skip": "Focus on the road, ignore billboards"
+        "s": "Focus on the road, ignore billboards"
       }
     },
     {
-      "id": "transport",
+      "id": "tr",
       "name": "Ads in public transport",
       "adDensity": 2,
-      "options": ["skip"],
+      "options": ["s"],
       "hints": {
-        "skip": "Focus elsewhere, use headphones"
+        "s": "Focus elsewhere, use headphones"
       }
     },
     {
-      "id": "websites",
+      "id": "wb",
       "name": "Non-shopping websites",
       "adDensity": 6,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Scroll past ads",
-        "blocker": "uBlock Origin, AdGuard, etc.",
-        "premium": "Subscription news sites, etc."
+        "s": "Scroll past ads",
+        "b": "uBlock Origin, AdGuard, etc.",
+        "p": "Subscription news sites, etc."
       }
     },
     {
-      "id": "social",
+      "id": "so",
       "name": "Social media",
       "adDensity": 7,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Scroll past sponsored content",
-        "blocker": "Browser extensions, modified apps",
-        "premium": "Twitter/X Premium, etc."
+        "s": "Scroll past sponsored content",
+        "b": "Browser extensions, modified apps",
+        "p": "Twitter/X Premium, etc."
       }
     },
     {
-      "id": "postal",
+      "id": "po",
       "name": "Postal mail",
       "adDensity": 3,
-      "options": ["skip", "blocker"],
+      "options": ["s", "b"],
       "hints": {
-        "skip": "Throw away without reading",
-        "blocker": "Opt-out services, mailbox stickers"
+        "s": "Throw away without reading",
+        "b": "Opt-out services, mailbox stickers"
       }
     },
     {
-      "id": "games",
+      "id": "gm",
       "name": "Online/mobile games",
       "adDensity": 7,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Close ads quickly",
-        "blocker": "Modified apps, DNS blocking",
-        "premium": "Paid games or in-app purchases"
+        "s": "Close ads quickly",
+        "b": "Modified apps, DNS blocking",
+        "p": "Paid games or in-app purchases"
       }
     },
     {
-      "id": "television",
+      "id": "tv",
       "name": "Television",
       "adDensity": 10,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Change channel during ads",
-        "blocker": "DVR fast-forward, Pi-hole",
-        "premium": "Ad-free streaming instead"
+        "s": "Change channel during ads",
+        "b": "DVR fast-forward, Pi-hole",
+        "p": "Ad-free streaming instead"
       }
     },
     {
-      "id": "radio",
+      "id": "rd",
       "name": "Radio",
       "adDensity": 8,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Change station during ads",
-        "blocker": "Ad-skipping apps",
-        "premium": "Satellite radio, Spotify Premium"
+        "s": "Change station during ads",
+        "b": "Ad-skipping apps",
+        "p": "Satellite radio, Spotify Premium"
       }
     },
     {
-      "id": "print",
+      "id": "pr",
       "name": "Printed magazines/newspapers",
       "adDensity": 3,
-      "options": ["skip"],
+      "options": ["s"],
       "hints": {
-        "skip": "Flip past ad pages"
+        "s": "Flip past ad pages"
       }
     },
     {
-      "id": "search",
+      "id": "sr",
       "name": "Search results",
       "adDensity": 4,
-      "options": ["skip", "blocker", "premium"],
+      "options": ["s", "b", "p"],
       "hints": {
-        "skip": "Ignore sponsored results",
-        "blocker": "uBlock Origin, Brave",
-        "premium": "Kagi, Neeva, etc."
+        "s": "Ignore sponsored results",
+        "b": "uBlock Origin, Brave",
+        "p": "Kagi, Neeva, etc."
       }
     }
   ],

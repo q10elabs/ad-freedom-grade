@@ -70,12 +70,21 @@
         }
 
         .eu-label {
+            position: relative;
             width: 280px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             background: white;
             border: 2px solid #2d3748;
+        }
+
+        .label-version {
+            position: absolute;
+            bottom: 4px;
+            right: 8px;
+            font-size: 0.65rem;
+            color: #a0aec0;
         }
 
         .label-header {
@@ -448,6 +457,23 @@
             color: #718096;
             font-size: 0.8rem;
             margin-left: 8px;
+        }
+
+        /* Main numeric score in result label (below grade bar, above sub-scores) */
+        .label-score-area {
+            padding: 10px 15px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .label-score-value {
+            font-size: 1.15rem;
+            font-weight: bold;
+        }
+
+        .label-score-unit {
+            font-size: 0.95rem;
+            font-weight: normal;
         }
 
         /* Sub-score bars in result label */

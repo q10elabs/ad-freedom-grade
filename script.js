@@ -80,7 +80,8 @@ async function initializeApp() {
 
 function renderExampleLabel(grade) {
     const container = document.getElementById('example-label');
-    container.innerHTML = createLabelHTML(grade);
+    const exampleScore = grade === 'A' ? 85 : 50;
+    container.innerHTML = createLabelHTML(grade, exampleScore);
 }
 
 function renderQuestions() {
@@ -168,7 +169,7 @@ function handleMitigationChange(mediaId) {
     // Currently just triggers UI updates if needed
 }
 
-function createLabelHTML(grade, subScores = null) {
+function createLabelHTML(grade, score, subScores = null) {
     const color = GRADE_COLORS[grade];
     const icons = config.icons;
 
@@ -200,6 +201,12 @@ function createLabelHTML(grade, subScores = null) {
         </div>
     `).join('');
 
+    const scoreAreaHTML = `
+        <div class="label-score-area">
+            <span class="label-score-value">${score}</span><span class="label-score-unit"> aew</span>
+        </div>
+    `;
+
     let subScoresHTML = '';
     if (subScores && config.subScores) {
         subScoresHTML = `
@@ -217,16 +224,19 @@ function createLabelHTML(grade, subScores = null) {
         `;
     }
 
+    const version = config.version || '1';
     return `
         <div class="eu-label">
             <div class="label-header">AD-FREE RATING</div>
             <div class="grade-bars">
                 ${barsHTML}
             </div>
+            ${scoreAreaHTML}
             ${subScoresHTML}
             <div class="icons-section">
                 ${iconsHTML}
             </div>
+            <span class="label-version">v${version}</span>
         </div>
     `;
 }
@@ -430,11 +440,11 @@ async function showResult(grade, score, subScores = null) {
     document.getElementById('details-btn').textContent = 'Show score breakdown';
     document.getElementById('details-btn').style.display = '';
 
-    document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+    document.getElementById('result-label').innerHTML = createLabelHTML(grade, score, subScores);
 
     if (config.formula === 'exposure_based') {
         document.getElementById('result-message').innerHTML =
-            `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+            `Your weekly ad exposure score (aew) is <strong>${score}</strong>.<br>` +
             `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
     } else {
         document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
@@ -505,10 +515,10 @@ async function parseUrlHash() {
         }
         document.getElementById('intro-sections').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
-        document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+        document.getElementById('result-label').innerHTML = createLabelHTML(grade, score, subScores);
         if (config.formula === 'exposure_based') {
             document.getElementById('result-message').innerHTML =
-                `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                `Your weekly ad exposure score (aew) is <strong>${score}</strong>.<br>` +
                 `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
         } else {
             document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
@@ -573,9 +583,9 @@ async function parseUrlHash() {
 
                     introSections.style.display = 'none';
                     document.getElementById('result-section').style.display = 'block';
-                    document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+                    document.getElementById('result-label').innerHTML = createLabelHTML(grade, score, subScores);
                     document.getElementById('result-message').innerHTML =
-                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `Your weekly ad exposure score (aew) is <strong>${score}</strong>.<br>` +
                         `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
                 } else {
                     config.questions.forEach(question => {
@@ -590,7 +600,7 @@ async function parseUrlHash() {
 
                     introSections.style.display = 'none';
                     document.getElementById('result-section').style.display = 'block';
-                    document.getElementById('result-label').innerHTML = createLabelHTML(grade);
+                    document.getElementById('result-label').innerHTML = createLabelHTML(grade, score);
                     document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
                 }
             } else {
@@ -598,10 +608,10 @@ async function parseUrlHash() {
                 const score = scoreParam !== null ? parseInt(scoreParam, 10) : 0;
                 document.getElementById('intro-sections').style.display = 'none';
                 document.getElementById('result-section').style.display = 'block';
-                document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+                document.getElementById('result-label').innerHTML = createLabelHTML(grade, score, subScores);
                 if (config.formula === 'exposure_based') {
                     document.getElementById('result-message').innerHTML =
-                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `Your weekly ad exposure score (aew) is <strong>${score}</strong>.<br>` +
                         `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
                 } else {
                     document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;
@@ -625,10 +635,10 @@ async function parseUrlHash() {
                 }
                 document.getElementById('intro-sections').style.display = 'none';
                 document.getElementById('result-section').style.display = 'block';
-                document.getElementById('result-label').innerHTML = createLabelHTML(grade, subScores);
+                document.getElementById('result-label').innerHTML = createLabelHTML(grade, score, subScores);
                 if (config.formula === 'exposure_based') {
                     document.getElementById('result-message').innerHTML =
-                        `Your weekly ad exposure score is <strong>${score}</strong>.<br>` +
+                        `Your weekly ad exposure score (aew) is <strong>${score}</strong>.<br>` +
                         `<span class="exposure-message">Lower scores mean less advertising in your life.</span>`;
                 } else {
                     document.getElementById('result-message').textContent = `You scored ${score} out of 100.`;

@@ -9,6 +9,6 @@ WWW_DIR := ../../www/ad-freedom-grade.q10elabs.com
 .PHONY: sync-to-www
 sync-to-www:
 	@mkdir -p "$(WWW_DIR)/configs"
-	cp index.html script.js example.png "$(WWW_DIR)/"
+	cp index.html robots.txt script.js example.png "$(WWW_DIR)/"
 	cp configs/v1.json configs/v2.json "$(WWW_DIR)/configs/"
 	@echo "Synced to $(WWW_DIR)"
